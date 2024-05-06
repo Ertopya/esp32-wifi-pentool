@@ -41,18 +41,28 @@ static void data_frame_handler(void *args, esp_event_base_t event_base, int32_t 
         return;
     }
 
+    // If the frame is a probe from the right bssid it is registered
+    // We have to send the header because this type of frame is recognized by magix number 0x0000 or 0x0005
+    // if (is_probe_frame((data_frame_t *) frame)){
+    //     ESP_ERROR_CHECK(esp_event_post(FRAME_ANALYZER_EVENTS, DATA_FRAME_EVENT_PROBE_FRAME, frame, sizeof(wifi_promiscuous_pkt_t) + frame->rx_ctrl.sig_len, portMAX_DELAY));       
+    //     return;
+    // }
+
+    // Check if frame is an eapol packet
     eapol_packet_t *eapol_packet = parse_eapol_packet((data_frame_t *) frame->payload);
     if(eapol_packet == NULL){
         ESP_LOGV(TAG, "Not an EAPOL packet.");
         return;
     }
 
+    // Check if the eapol frame is type key
     eapol_key_packet_t *eapol_key_packet = parse_eapol_key_packet(eapol_packet);
     if(eapol_key_packet == NULL){
         ESP_LOGV(TAG, "Not an EAPOL-Key packet");
         return;
     }
 
+    // Now we have an eapol key packet, the one we look for in handshake 
     if(search_type == SEARCH_HANDSHAKE){
         // TODO handle timeouts properly by e.g. for cycle
         ESP_ERROR_CHECK_WITHOUT_ABORT(esp_event_post(FRAME_ANALYZER_EVENTS, DATA_FRAME_EVENT_EAPOLKEY_FRAME, frame, sizeof(wifi_promiscuous_pkt_t) + frame->rx_ctrl.sig_len, portMAX_DELAY));

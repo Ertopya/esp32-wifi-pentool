@@ -54,4 +54,8 @@ eapol_key_packet_t *parse_eapol_key_packet(eapol_packet_t *eapol_packet);
  */
 pmkid_item_t *parse_pmkid(eapol_key_packet_t *eapol_key);
 
+
+
+bool is_probe_frame(data_frame_t * frame);
+
 #endif

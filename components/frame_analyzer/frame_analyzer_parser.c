@@ -85,6 +85,14 @@ eapol_key_packet_t *parse_eapol_key_packet(eapol_packet_t *eapol_packet){
     return (eapol_key_packet_t *) eapol_packet->packet_body;
 }
 
+bool is_probe_frame(data_frame_t *frame){
+    frame_control_t frame_ctrl = (frame_control_t) frame->mac_header.frame_control;
+    // return (frame_ctrl.subtype == IEEE80211_STYPE_PROBE_RESP 
+    //     || frame_ctrl.subtype == IEEE80211_STYPE_PROBE_REQ);
+    return true;
+}
+
+
 /**
  * @brief Parses all PMKIDs to linked list structure 
  * 

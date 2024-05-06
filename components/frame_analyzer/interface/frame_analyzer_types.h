@@ -14,7 +14,10 @@
 /**
  * @see Ref: 802.1X-2020 [11.1.4]
  */
-#define ETHER_TYPE_EAPOL 0x888e
+#define ETHER_TYPE_EAPOL            0x888e
+#define IEEE80211_STYPE_PROBE_REQ   0x004
+#define IEEE80211_STYPE_PROBE_RESP  0x005
+
 
 /**
  * @see Ref: 802.1X-2020 [11.3.2]
@@ -75,6 +78,14 @@ typedef struct {
 	uint8_t packet_type;
 	uint16_t packet_body_length;
 } eapol_packet_header_t;
+
+/**
+ * @see Ref: 802.1X-2020 [11.3], 802.11-2016 [12.7.2]
+ */
+typedef struct {
+	eapol_packet_header_t header;
+	uint8_t packet_body[];
+} probe_packet_t;
 
 /**
  * @see Ref: 802.1X-2020 [11.3], 802.11-2016 [12.7.2]
