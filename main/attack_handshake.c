@@ -38,16 +38,24 @@ static const wifi_ap_record_t *ap_record = NULL;
  * @param event_id expects DATA_FRAME_EVENT_EAPOLKEY_FRAME
  * @param event_data expects wifi_promiscuous_pkt_t
  */
-static void eapol_probe_frame_handler(void *args, esp_event_base_t event_base, int32_t event_id, void *event_data) {
-    ESP_LOGI(TAG, "Got frame");
+static void eapolkey_frame_handler(void *args, esp_event_base_t event_base, int32_t event_id, void *event_data) {
+    ESP_LOGI(TAG, "Got EAPoL-Key frame");
     ESP_LOGD(TAG, "Processing handshake frame...");
     wifi_promiscuous_pkt_t *frame = (wifi_promiscuous_pkt_t *) event_data;
     attack_append_status_content(frame->payload, frame->rx_ctrl.sig_len);
     pcap_serializer_append_frame(frame->payload, frame->rx_ctrl.sig_len, frame->rx_ctrl.timestamp);
     hccapx_serializer_add_frame((data_frame_t *) frame->payload);
+    return;
 }
 
-
+static void probe_frame_handler(void *args, esp_event_base_t event_base, int32_t event_id, void *event_data) {
+    ESP_LOGI(TAG, "Got PROBE frame");
+    ESP_LOGD(TAG, "AJOUT PROBE frame...");
+    //wifi_promiscuous_pkt_t *frame = (wifi_promiscuous_pkt_t *) event_data;
+    // attack_append_status_content(frame->payload, frame->rx_ctrl.sig_len);
+    // pcap_serializer_append_frame(frame->payload, frame->rx_ctrl.sig_len, frame->rx_ctrl.timestamp);
+    return;
+}
 
 void attack_handshake_start(attack_config_t *attack_config){
     ESP_LOGI(TAG, "Starting handshake attack...");
@@ -58,8 +66,10 @@ void attack_handshake_start(attack_config_t *attack_config){
     wifictl_sniffer_filter_frame_types(true, false, false);
     wifictl_sniffer_start(ap_record->primary);
     frame_analyzer_capture_start(SEARCH_HANDSHAKE, ap_record->bssid);
-    ESP_ERROR_CHECK(esp_event_handler_register(FRAME_ANALYZER_EVENTS, DATA_FRAME_EVENT_EAPOLKEY_FRAME, &eapol_probe_frame_handler, NULL));
-    //ESP_ERROR_CHECK(esp_event_handler_register(FRAME_ANALYZER_EVENTS, DATA_FRAME_EVENT_PROBE_FRAME, &eapol_probe_frame_handler, NULL));    
+    ESP_ERROR_CHECK(esp_event_handler_register(FRAME_ANALYZER_EVENTS, DATA_FRAME_EVENT_EAPOLKEY_FRAME, &eapolkey_frame_handler, NULL));
+    ESP_LOGD(TAG, "Frame EAPOL-KEY handle pass");
+    ESP_ERROR_CHECK(esp_event_handler_register(FRAME_ANALYZER_EVENTS, DATA_FRAME_EVENT_PROBE_FRAME, &probe_frame_handler, NULL));
+    ESP_LOGD(TAG, "Frame PROBE handle pass");
     switch(attack_config->method){
         case ATTACK_HANDSHAKE_METHOD_BROADCAST:
             ESP_LOGD(TAG, "ATTACK_HANDSHAKE_METHOD_BROADCAST");
@@ -95,7 +105,7 @@ void attack_handshake_stop(){
     }
     wifictl_sniffer_stop();
     frame_analyzer_capture_stop();
-    ESP_ERROR_CHECK(esp_event_handler_unregister(ESP_EVENT_ANY_BASE, ESP_EVENT_ANY_ID, &eapol_probe_frame_handler));
+    ESP_ERROR_CHECK(esp_event_handler_unregister(ESP_EVENT_ANY_BASE, ESP_EVENT_ANY_ID, &eapolkey_frame_handler));
     ap_record = NULL;
     method = -1;
     ESP_LOGD(TAG, "Handshake attack stopped");

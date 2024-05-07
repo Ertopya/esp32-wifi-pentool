@@ -85,14 +85,6 @@ typedef struct {
 typedef struct {
 	eapol_packet_header_t header;
 	uint8_t packet_body[];
-} probe_packet_t;
-
-/**
- * @see Ref: 802.1X-2020 [11.3], 802.11-2016 [12.7.2]
- */
-typedef struct {
-	eapol_packet_header_t header;
-	uint8_t packet_body[];
 } eapol_packet_t;
 
 /**

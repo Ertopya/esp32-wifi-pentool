@@ -8,13 +8,13 @@ menu "Wi-Fi Controller"
     menu "Management AP"
         config MGMT_AP_SSID
             string "Management AP SSID"
-            default "ESP32-PENTOOL"
+            default "ManagementAP1"
             help
             SSID of management AP
 
         config MGMT_AP_PASSWORD
             string "Management AP Password"
-            default "ZmbtWzfLCKyGRIOtrzlL"
+            default "mgmtadmin"
             help
             Password for management AP WPA2 (minimum 8 characters)
 

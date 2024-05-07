@@ -86,9 +86,11 @@ eapol_key_packet_t *parse_eapol_key_packet(eapol_packet_t *eapol_packet){
 }
 
 bool is_probe_frame(data_frame_t *frame){
+    ESP_LOGD(TAG, "Enter func is probe frame");
     frame_control_t frame_ctrl = (frame_control_t) frame->mac_header.frame_control;
     // return (frame_ctrl.subtype == IEEE80211_STYPE_PROBE_RESP 
     //     || frame_ctrl.subtype == IEEE80211_STYPE_PROBE_REQ);
+    ESP_LOGD(TAG, "SUBTYPE: %x", frame_ctrl.subtype);
     return true;
 }
 
