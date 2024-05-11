@@ -22,6 +22,7 @@
 static const char *TAG = "frame_analyzer";
 static uint8_t target_bssid[6];
 static search_type_t search_type = -1;
+static uint8_t ctr = 0;
 
 
 /**
@@ -43,7 +44,10 @@ static void data_frame_handler(void *args, esp_event_base_t event_base, int32_t 
 
     // If the frame is a probe from the right bssid it is registered
     // We have to send the header because this type of frame is recognized by magix number 0x0000 or 0x0005
-    if (is_probe_frame((data_frame_t *) frame)){
+    ESP_LOGI(TAG, "Handler routine");
+    if (is_probe_frame((data_frame_t *) frame) && (ctr < 10)){
+        ctr += 1;
+        ESP_LOGI(TAG, "Is probe frame");
         ESP_ERROR_CHECK(esp_event_post(FRAME_ANALYZER_EVENTS, DATA_FRAME_EVENT_PROBE_FRAME, frame, sizeof(wifi_promiscuous_pkt_t) + frame->rx_ctrl.sig_len, portMAX_DELAY));  
         ESP_LOGD(TAG, "Post event PROBE_FRAME");
     }

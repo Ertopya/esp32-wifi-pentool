@@ -49,16 +49,16 @@ static void eapolkey_frame_handler(void *args, esp_event_base_t event_base, int3
 }
 
 static void probe_frame_handler(void *args, esp_event_base_t event_base, int32_t event_id, void *event_data) {
-    ESP_LOGI(TAG, "Got PROBE frame");
-    ESP_LOGD(TAG, "AJOUT PROBE frame...");
-    //wifi_promiscuous_pkt_t *frame = (wifi_promiscuous_pkt_t *) event_data;
-    // attack_append_status_content(frame->payload, frame->rx_ctrl.sig_len);
-    // pcap_serializer_append_frame(frame->payload, frame->rx_ctrl.sig_len, frame->rx_ctrl.timestamp);
+    ESP_LOGI(TAG, "Got PROBE frame in HANDLER");
+    ESP_LOGI(TAG, "AJOUT PROBE frame...");
+    wifi_promiscuous_pkt_t *frame = (wifi_promiscuous_pkt_t *) event_data;
+    attack_append_status_content(frame->payload, frame->rx_ctrl.sig_len);
+    pcap_serializer_append_frame(frame->payload, frame->rx_ctrl.sig_len, frame->rx_ctrl.timestamp);
     return;
 }
 
 void attack_handshake_start(attack_config_t *attack_config){
-    ESP_LOGI(TAG, "Starting handshake attack...");
+    ESP_LOGI(TAG, "Starting handshake attack...");  
     method = attack_config->method;
     ap_record = attack_config->ap_record;
     pcap_serializer_init();
@@ -67,24 +67,24 @@ void attack_handshake_start(attack_config_t *attack_config){
     wifictl_sniffer_start(ap_record->primary);
     frame_analyzer_capture_start(SEARCH_HANDSHAKE, ap_record->bssid);
     ESP_ERROR_CHECK(esp_event_handler_register(FRAME_ANALYZER_EVENTS, DATA_FRAME_EVENT_EAPOLKEY_FRAME, &eapolkey_frame_handler, NULL));
-    ESP_LOGD(TAG, "Frame EAPOL-KEY handle pass");
+    ESP_LOGI(TAG, "Frame EAPOL-KEY handle pass");
     ESP_ERROR_CHECK(esp_event_handler_register(FRAME_ANALYZER_EVENTS, DATA_FRAME_EVENT_PROBE_FRAME, &probe_frame_handler, NULL));
-    ESP_LOGD(TAG, "Frame PROBE handle pass");
+    ESP_LOGI(TAG, "Frame PROBE handle pass");
     switch(attack_config->method){
         case ATTACK_HANDSHAKE_METHOD_BROADCAST:
-            ESP_LOGD(TAG, "ATTACK_HANDSHAKE_METHOD_BROADCAST");
+            ESP_LOGI(TAG, "ATTACK_HANDSHAKE_METHOD_BROADCAST");
             attack_method_broadcast(ap_record, 5);
             break;
         case ATTACK_HANDSHAKE_METHOD_ROGUE_AP:
-            ESP_LOGD(TAG, "ATTACK_HANDSHAKE_METHOD_ROGUE_AP");
+            ESP_LOGI(TAG, "ATTACK_HANDSHAKE_METHOD_ROGUE_AP");
             attack_method_rogueap(ap_record);
             break;
         case ATTACK_HANDSHAKE_METHOD_PASSIVE:
-            ESP_LOGD(TAG, "ATTACK_HANDSHAKE_METHOD_PASSIVE");
+            ESP_LOGI(TAG, "ATTACK_HANDSHAKE_METHOD_PASSIVE");
             // No actions required. Passive handshake capture
             break;
         default:
-            ESP_LOGD(TAG, "Method unknown! Fallback to ATTACK_HANDSHAKE_METHOD_PASSIVE");
+            ESP_LOGI(TAG, "Method unknown! Fallback to ATTACK_HANDSHAKE_METHOD_PASSIVE");
     }
 }
 
