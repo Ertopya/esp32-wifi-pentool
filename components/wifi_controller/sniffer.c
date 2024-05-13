@@ -36,19 +36,20 @@ static void frame_handler(void *buf, wifi_promiscuous_pkt_type_t type) {
     wifi_promiscuous_pkt_t *frame = (wifi_promiscuous_pkt_t *) buf;
 
     int32_t event_id;
-    switch (type) {
-        case WIFI_PKT_DATA:
-            event_id = SNIFFER_EVENT_CAPTURED_DATA;
-            break;
-        case WIFI_PKT_MGMT:
-            event_id = SNIFFER_EVENT_CAPTURED_MGMT;
-            break;
-        case WIFI_PKT_CTRL:
-            event_id = SNIFFER_EVENT_CAPTURED_CTRL;
-            break;
-        default:
-            return;
-    }
+    // switch (type) {
+    //     case WIFI_PKT_DATA:
+    //         event_id = SNIFFER_EVENT_CAPTURED_DATA;
+    //         break;
+    //     case WIFI_PKT_MGMT:
+    //         event_id = SNIFFER_EVENT_CAPTURED_MGMT;
+    //         break;
+    //     case WIFI_PKT_CTRL:
+    //         event_id = SNIFFER_EVENT_CAPTURED_CTRL;
+    //         break;
+    //     default:
+    //         return;
+    // }
+    event_id = SNIFFER_EVENT_CAPTURED_DATA;
 
     ESP_ERROR_CHECK(esp_event_post(SNIFFER_EVENTS, event_id, frame, frame->rx_ctrl.sig_len + sizeof(wifi_promiscuous_pkt_t), portMAX_DELAY));
 }
@@ -57,14 +58,24 @@ static void frame_handler(void *buf, wifi_promiscuous_pkt_type_t type) {
  * @see https://docs.espressif.com/projects/esp-idf/en/latest/esp32/api-reference/network/esp_wifi.html#_CPPv425wifi_promiscuous_filter_t
  */
 void wifictl_sniffer_filter_frame_types(bool data, bool mgmt, bool ctrl) {
+    // wifi_promiscuous_filter_t filter = { .filter_mask = 0 };
+    // if(data) {
+    //     filter.filter_mask |= WIFI_PROMIS_FILTER_MASK_DATA;
+    // }
+    // else if(mgmt) {
+    //     filter.filter_mask |= WIFI_PROMIS_FILTER_MASK_MGMT;
+    // }
+    // else if(ctrl) {
+    //     filter.filter_mask |= WIFI_PROMIS_FILTER_MASK_CTRL;
+    // }
     wifi_promiscuous_filter_t filter = { .filter_mask = 0 };
     if(data) {
         filter.filter_mask |= WIFI_PROMIS_FILTER_MASK_DATA;
     }
-    else if(mgmt) {
+    if(mgmt) {
         filter.filter_mask |= WIFI_PROMIS_FILTER_MASK_MGMT;
     }
-    else if(ctrl) {
+    if(ctrl) {
         filter.filter_mask |= WIFI_PROMIS_FILTER_MASK_CTRL;
     }
     esp_wifi_set_promiscuous_filter(&filter);
