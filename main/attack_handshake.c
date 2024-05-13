@@ -48,10 +48,11 @@ static void eapolkey_frame_handler(void *args, esp_event_base_t event_base, int3
     return;
 }
 
+// Two different handlers are needed, we can't send two events to the same function here
 static void probe_frame_handler(void *args, esp_event_base_t event_base, int32_t event_id, void *event_data) {
     ESP_LOGI(TAG, "Got PROBE frame in HANDLER");
-    ESP_LOGI(TAG, "AJOUT PROBE frame...");
     wifi_promiscuous_pkt_t *frame = (wifi_promiscuous_pkt_t *) event_data;
+    ESP_LOGI(TAG, "AJOUT PROBE frame of size %d", frame->rx_ctrl.sig_len);
     attack_append_status_content(frame->payload, frame->rx_ctrl.sig_len);
     pcap_serializer_append_frame(frame->payload, frame->rx_ctrl.sig_len, frame->rx_ctrl.timestamp);
     return;
