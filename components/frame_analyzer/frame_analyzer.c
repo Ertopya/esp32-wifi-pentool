@@ -40,15 +40,6 @@ static void data_frame_handler(void *args, esp_event_base_t event_base, int32_t 
         return;
     }
 
-    // If the frame is a probe from the right bssid it is registered
-    // We have to send the header because this type of frame is recognized by magix number 0x0000 or 0x0005
-
-    ESP_LOGI(TAG, "Handler DATA routine\t\tframe of size %d", frame->rx_ctrl.sig_len);
-    if (is_probe_frame((data_frame_t *) frame)){
-        ESP_ERROR_CHECK_WITHOUT_ABORT(esp_event_post(FRAME_ANALYZER_EVENTS, DATA_FRAME_EVENT_PROBE_FRAME, frame, sizeof(wifi_promiscuous_pkt_t) + frame->rx_ctrl.sig_len, portMAX_DELAY));  
-        ESP_LOGD(TAG, "Post event PROBE_FRAME");
-    }
-
     // Check if frame is an eapol packet
     eapol_packet_t *eapol_packet = parse_eapol_packet((data_frame_t *) frame->payload);
     if(eapol_packet == NULL){
@@ -83,7 +74,6 @@ static void data_frame_handler(void *args, esp_event_base_t event_base, int32_t 
 
 
 static void mgmt_frame_handler(void *args, esp_event_base_t event_base, int32_t event_id, void *event_data) {
-    ESP_LOGI(TAG,"\nMGMT FRAME\n");
     wifi_promiscuous_pkt_t *frame = (wifi_promiscuous_pkt_t *) event_data;
 
     if(!is_frame_bssid_matching(frame, target_bssid)){
@@ -94,7 +84,6 @@ static void mgmt_frame_handler(void *args, esp_event_base_t event_base, int32_t 
     // If the frame is a probe from the right bssid it is registered
     // We have to send the header because this type of frame is recognized by magix number 0x0000 or 0x0005
 
-    ESP_LOGI(TAG, "Handler MGMT routine\t\tframe of size %d", frame->rx_ctrl.sig_len);
     if (is_probe_frame((data_frame_t *) frame)){
         ESP_ERROR_CHECK_WITHOUT_ABORT(esp_event_post(FRAME_ANALYZER_EVENTS, DATA_FRAME_EVENT_PROBE_FRAME, frame, sizeof(wifi_promiscuous_pkt_t) + frame->rx_ctrl.sig_len, portMAX_DELAY));  
         ESP_LOGD(TAG, "Post event PROBE_FRAME");
@@ -105,7 +94,7 @@ void frame_analyzer_capture_start(search_type_t search_type_arg, const uint8_t *
     ESP_LOGI(TAG, "Frame analysis started...");
     search_type = search_type_arg;
     memcpy(&target_bssid, bssid, 6);
-    //ESP_ERROR_CHECK(esp_event_handler_register(SNIFFER_EVENTS, SNIFFER_EVENT_CAPTURED_MGMT, &mgmt_frame_handler, NULL));
+    ESP_ERROR_CHECK(esp_event_handler_register(SNIFFER_EVENTS, SNIFFER_EVENT_CAPTURED_MGMT, &mgmt_frame_handler, NULL));
     ESP_ERROR_CHECK(esp_event_handler_register(SNIFFER_EVENTS, SNIFFER_EVENT_CAPTURED_DATA, &data_frame_handler, NULL));
 }
 

@@ -73,7 +73,7 @@ eapol_packet_t *parse_eapol_packet(data_frame_t *frame) {
     if(ntohs(*(uint16_t *) frame_buffer) == ETHER_TYPE_EAPOL) {
         ESP_LOGD(TAG, "EAPOL packet");
         frame_buffer += 2;
-        return (eapol_packet_t *) frame_buffer; 
+        return (eapol_packet_t *) frame_buffer;
     }
     return NULL;
 }
@@ -87,10 +87,15 @@ eapol_key_packet_t *parse_eapol_key_packet(eapol_packet_t *eapol_packet){
 }
 
 bool is_probe_frame(data_frame_t *frame){
-    frame_control_t frame_ctrl = (frame_control_t) frame->mac_header.frame_control;
-    // return (frame_ctrl.subtype == IEEE80211_STYPE_PROBE_RESP 
-    //     || frame_ctrl.subtype == IEEE80211_STYPE_PROBE_REQ);
-    return true;
+    //frame_control_t frame_ctrl = (frame_control_t) frame->mac_header.frame_control;
+    bool res = (frame->mac_header.frame_control.subtype == IEEE80211_STYPE_PROBE_RESP)
+        || (frame->mac_header.frame_control.subtype == IEEE80211_STYPE_PROBE_REQ)
+        || (frame->mac_header.frame_control.subtype == IEEE80211_STYPE_BEACON);
+
+    // CHANGE SUBTYPE: GOT ONLY 12-13-14
+    ESP_LOGI(TAG, "\nWHICH SUBTYPE: %d", frame->mac_header.frame_control.subtype);
+    ESP_LOGI(TAG, "RETURN SUBTYPE: %d", res);
+    return (res);
 }
 
 

@@ -36,20 +36,19 @@ static void frame_handler(void *buf, wifi_promiscuous_pkt_type_t type) {
     wifi_promiscuous_pkt_t *frame = (wifi_promiscuous_pkt_t *) buf;
 
     int32_t event_id;
-    // switch (type) {
-    //     case WIFI_PKT_DATA:
-    //         event_id = SNIFFER_EVENT_CAPTURED_DATA;
-    //         break;
-    //     case WIFI_PKT_MGMT:
-    //         event_id = SNIFFER_EVENT_CAPTURED_MGMT;
-    //         break;
-    //     case WIFI_PKT_CTRL:
-    //         event_id = SNIFFER_EVENT_CAPTURED_CTRL;
-    //         break;
-    //     default:
-    //         return;
-    // }
-    event_id = SNIFFER_EVENT_CAPTURED_DATA;
+    switch (type) {
+        case WIFI_PKT_DATA:
+            event_id = SNIFFER_EVENT_CAPTURED_DATA;
+            break;
+        case WIFI_PKT_MGMT:
+            event_id = SNIFFER_EVENT_CAPTURED_MGMT;
+            break;
+        case WIFI_PKT_CTRL:
+            event_id = SNIFFER_EVENT_CAPTURED_CTRL;
+            break;
+        default:
+            return;
+    }
 
     ESP_ERROR_CHECK(esp_event_post(SNIFFER_EVENTS, event_id, frame, frame->rx_ctrl.sig_len + sizeof(wifi_promiscuous_pkt_t), portMAX_DELAY));
 }
