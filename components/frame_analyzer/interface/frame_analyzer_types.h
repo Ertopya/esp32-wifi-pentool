@@ -15,9 +15,10 @@
  * @see Ref: 802.1X-2020 [11.1.4]
  */
 #define ETHER_TYPE_EAPOL            0x888e
-#define IEEE80211_STYPE_PROBE_REQ   4
-#define IEEE80211_STYPE_PROBE_RESP  5
-#define IEEE80211_STYPE_BEACON      8
+
+// TODO fix those values normally 0x0005 and 0x0008 but sniffer subtype catches 14 and 15.
+#define IEEE80211_STYPE_PROBE_RESP  14
+#define IEEE80211_STYPE_BEACON      15
 
 
 /**
