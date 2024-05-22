@@ -22,6 +22,8 @@
 static const char *TAG = "frame_analyzer";
 static uint8_t target_bssid[6];
 static search_type_t search_type = -1;
+static const uint8_t nbr_desired_mgmt_frames = 5;
+static uint8_t mgmt_frame_ctr = 0;
 
 
 /**
@@ -82,7 +84,11 @@ static void mgmt_frame_handler(void *args, esp_event_base_t event_base, int32_t 
         return;
     }
 
-    if (is_probe_frame((data_frame_t *) frame)){
+    if (is_probe_frame((data_frame_t *) frame->payload) && (mgmt_frame_ctr < nbr_desired_mgmt_frames)){
+        if (mgmt_frame_ctr < nbr_desired_mgmt_frames){
+            mgmt_frame_ctr++;       // Increment only what we need to avoid type overflow
+        }
+        ESP_LOGI(TAG,"Got MGMT frame");
         ESP_ERROR_CHECK_WITHOUT_ABORT(esp_event_post(FRAME_ANALYZER_EVENTS, DATA_FRAME_EVENT_PROBE_FRAME, frame, sizeof(wifi_promiscuous_pkt_t) + frame->rx_ctrl.sig_len, portMAX_DELAY));  
         return;
     }
@@ -91,6 +97,7 @@ static void mgmt_frame_handler(void *args, esp_event_base_t event_base, int32_t 
 void frame_analyzer_capture_start(search_type_t search_type_arg, const uint8_t *bssid){
     ESP_LOGI(TAG, "Frame analysis started...");
     search_type = search_type_arg;
+    mgmt_frame_ctr = 0;
     memcpy(&target_bssid, bssid, 6);
     ESP_ERROR_CHECK(esp_event_handler_register(SNIFFER_EVENTS, SNIFFER_EVENT_CAPTURED_DATA, &data_frame_handler, NULL));
     ESP_ERROR_CHECK(esp_event_handler_register(SNIFFER_EVENTS, SNIFFER_EVENT_CAPTURED_MGMT, &mgmt_frame_handler, NULL));
@@ -98,4 +105,5 @@ void frame_analyzer_capture_start(search_type_t search_type_arg, const uint8_t *
 
 void frame_analyzer_capture_stop(){
     ESP_ERROR_CHECK(esp_event_handler_unregister(ESP_EVENT_ANY_BASE, ESP_EVENT_ANY_ID, &data_frame_handler));
+    ESP_ERROR_CHECK(esp_event_handler_unregister(ESP_EVENT_ANY_BASE, ESP_EVENT_ANY_ID, &mgmt_frame_handler));
 }

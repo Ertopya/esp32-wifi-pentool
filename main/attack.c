@@ -119,6 +119,7 @@ static void attack_request_handler(void *args, esp_event_base_t event_base, int3
     
     attack_status.state = RUNNING;
     attack_status.type = attack_config.type;
+    ESP_LOGI(TAG,"attack_status.type: %d", attack_status.type);
 
     if(attack_config.ap_record == NULL){
         ESP_LOGE(TAG, "NPE: No attack_config.ap_record!");
@@ -156,7 +157,7 @@ static void attack_request_handler(void *args, esp_event_base_t event_base, int3
  * @param event_data not used
  */
 static void attack_reset_handler(void *args, esp_event_base_t event_base, int32_t event_id, void *event_data) {
-    ESP_LOGD(TAG, "Resetting attack status...");
+    ESP_LOGE(TAG, "Resetting attack status...");
     if(attack_status.content){
         free(attack_status.content);
         attack_status.content = NULL;

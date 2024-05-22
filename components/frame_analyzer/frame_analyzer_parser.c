@@ -21,7 +21,6 @@
 #include "frame_analyzer_types.h"
 
 static const char *TAG = "frame_analyzer:parser";
-static uint8_t mgmt_ctr = 0;
 
 ESP_EVENT_DEFINE_BASE(FRAME_ANALYZER_EVENTS);
 
@@ -89,10 +88,8 @@ eapol_key_packet_t *parse_eapol_key_packet(eapol_packet_t *eapol_packet){
 
 bool is_probe_frame(data_frame_t *frame){
     uint8_t subtype = frame->mac_header.frame_control.subtype;
-    mgmt_ctr++;
-    bool res = (subtype == IEEE80211_STYPE_PROBE_RESP)      // Probe REQ coming from other BSSID is not catched
+    return (subtype == IEEE80211_STYPE_PROBE_RESP)      // Probe REQ coming from other BSSID is not catched
         || (subtype == IEEE80211_STYPE_BEACON);
-    return (res && (mgmt_ctr < 5));         // Not need more than 4 frames
 }
 
 /**

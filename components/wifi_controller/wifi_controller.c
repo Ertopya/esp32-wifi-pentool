@@ -27,15 +27,16 @@ static void wifi_event_handler(void *event_handler_arg, esp_event_base_t event_b
  * 
  * @attention This function should be called only once.
  */
-static void wifi_init_apsta(){
-    ESP_ERROR_CHECK(esp_netif_init());
+void wifi_init_apsta(){
+    ESP_LOGI(TAG,"\nWifi init\n");
+    wifi_init_config_t wifi_init_config = WIFI_INIT_CONFIG_DEFAULT();
+    ESP_ERROR_CHECK(esp_wifi_init(&wifi_init_config));
 
+    ESP_ERROR_CHECK(esp_netif_init());
+    
     esp_netif_create_default_wifi_ap();
     esp_netif_create_default_wifi_sta();
 
-    wifi_init_config_t wifi_init_config = WIFI_INIT_CONFIG_DEFAULT();
-
-    ESP_ERROR_CHECK(esp_wifi_init(&wifi_init_config));
     ESP_ERROR_CHECK(esp_wifi_set_storage(WIFI_STORAGE_RAM));
     ESP_ERROR_CHECK(esp_wifi_set_mode(WIFI_MODE_APSTA));
 

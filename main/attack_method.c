@@ -16,6 +16,8 @@
 #include "esp_wifi_types.h"
 
 #include "wifi_controller.h"
+
+#include "wifi_controller.h"
 #include "wsl_bypasser.h"
 
 static const char *TAG = "main:attack_method";
