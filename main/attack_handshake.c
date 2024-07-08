@@ -60,6 +60,7 @@ static void probe_frame_handler(void *args, esp_event_base_t event_base, int32_t
 void attack_handshake_start(attack_config_t *attack_config){
     ESP_LOGI(TAG, "Starting handshake attack...");
     ap_record = attack_config->ap_record;
+    method = attack_config->method;
 
     pcap_serializer_init();
     wifictl_sniffer_filter_frame_types(true, true, false);
@@ -90,11 +91,12 @@ void attack_handshake_start(attack_config_t *attack_config){
 }
 
 void attack_handshake_stop(){
+    ESP_LOGI(TAG, "METHOD: %d\n", method);
     switch(method){
         case ATTACK_HANDSHAKE_METHOD_BROADCAST:
             attack_method_broadcast_stop();
-            // wifictl_mgmt_ap_start();
-            // wifictl_restore_ap_mac();
+            wifictl_mgmt_ap_start();
+            wifictl_restore_ap_mac();
             break;
         case ATTACK_HANDSHAKE_METHOD_ROGUE_AP:
             wifictl_mgmt_ap_start();

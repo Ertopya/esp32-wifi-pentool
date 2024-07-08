@@ -130,15 +130,18 @@ static void attack_request_handler(void *args, esp_event_base_t event_base, int3
     // start attack based on it's type
     switch(attack_config.type) {
         case ATTACK_TYPE_PMKID:
+            ESP_LOGI(TAG, "attack_pmkid_start");
             attack_pmkid_start(&attack_config);
             break;
         case ATTACK_TYPE_HANDSHAKE:
+            ESP_LOGI(TAG, "attack_handshake_start");
             attack_handshake_start(&attack_config);
             break;
         case ATTACK_TYPE_PASSIVE:
             ESP_LOGW(TAG, "ATTACK_TYPE_PASSIVE not implemented yet!");
             break;
         case ATTACK_TYPE_DOS:
+            ESP_LOGI(TAG, "attack_dos_start");
             attack_dos_start(&attack_config);
             break;
         default:
