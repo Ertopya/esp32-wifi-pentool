@@ -13,7 +13,6 @@ Obviously cracking is not part of this project, as ESP32 is not sufficient to cr
 - **Deauthentication attacks** using various methods
 - **Denial of Service attacks**
 - Formatting captured traffic into **PCAP format**
-- Parsing captured handshakes into **HCCAPX file** ready to be cracked by Hashcat
 - Passive handshake sniffing
 - Easily extensible framework for new attacks implementations
 - Management AP for easy configuration on the go using smartphone for example
@@ -72,7 +71,6 @@ This project consists of multiple components, that can be reused in other projec
 - [**Wi-Fi Stack Libraries Bypasser**](components/wsl_bypasser) component bypasses Wi-Fi Stack Libraries restriction to send some types of arbitrary 802.11 frames.
 - [**Frame Analyzer**](components/frame_analyzer) component processes captured frames and provides parsing functionality to other components.
 - [**PCAP Serializer**](components/pcap_serializer) component serializes captured frames into PCAP binary format and provides it to other components (mostly for webserver/UI)
-- [**HCCAPX Serializer**](components/hccapx_serializer) component serializes captured frames into HCCAPX binary format and provides it to other components (mostly for webserver/UI)
 
 ### Further reading
 * [Academic paper about this project (PDF)](https://excel.fit.vutbr.cz/submissions/2021/048/48.pdf)

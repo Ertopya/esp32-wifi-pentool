@@ -21,7 +21,6 @@
 #include "wifi_controller.h"
 #include "frame_analyzer.h"
 #include "pcap_serializer.h"
-#include "hccapx_serializer.h"
 
 static const char *TAG = "main:attack_handshake";
 static attack_handshake_methods_t method = -1;
@@ -31,7 +30,7 @@ static const wifi_ap_record_t *ap_record = NULL;
  * @brief Callback for DATA_FRAME_EVENT_EAPOLKEY_FRAME event.
  * 
  * If EAPOL-Key frame is captured and DATA_FRAME_EVENT_EAPOLKEY_FRAME event is received from event pool, this method
- * appends the frame to status content and serialize them into pcap and hccapx format.
+ * appends the frame to status content and serialize them into pcap format.
  * 
  * @param args not used
  * @param event_base expects FRAME_ANALYZER_EVENTS

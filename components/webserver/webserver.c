@@ -21,7 +21,6 @@
 #include "wifi_controller.h"
 #include "attack.h"
 #include "pcap_serializer.h"
-#include "hccapx_serializer.h"
 
 #include "pages/page_index.h"
 
@@ -188,30 +187,6 @@ static httpd_uri_t uri_capture_pcap_get = {
 };
 //@}
 
-/**
- * @brief Handlers for \c /capture.hccapx endpoint
- *
- * This endpoint forwards HCCAPX binary data from hccapx_serializer via octet stream to client.
- *
- * @note Most browsers will start download process when this endpoint is called.
- * @param req
- * @return esp_err_t
- * @{
- */
-static esp_err_t uri_capture_hccapx_get_handler(httpd_req_t *req){
-    ESP_LOGD(TAG, "Providing HCCAPX file...");
-    ESP_ERROR_CHECK(httpd_resp_set_type(req, HTTPD_TYPE_OCTET));
-    return httpd_resp_send(req, (char *) hccapx_serializer_get(), sizeof(hccapx_t));
-}
-
-static httpd_uri_t uri_capture_hccapx_get = {
-    .uri = "/capture.hccapx",
-    .method = HTTP_GET,
-    .handler = uri_capture_hccapx_get_handler,
-    .user_ctx = NULL
-};
-//@}
-
 void webserver_run(){
     ESP_LOGD(TAG, "Running webserver");
 
@@ -225,5 +200,4 @@ void webserver_run(){
     ESP_ERROR_CHECK(httpd_register_uri_handler(server, &uri_run_attack_post));
     ESP_ERROR_CHECK(httpd_register_uri_handler(server, &uri_status_get));
     ESP_ERROR_CHECK(httpd_register_uri_handler(server, &uri_capture_pcap_get));
-    ESP_ERROR_CHECK(httpd_register_uri_handler(server, &uri_capture_hccapx_get));
 }

@@ -16,7 +16,6 @@ This webserver implements few enpoints that are used by JavaScript client.
 - **`/ap-list`** scans near APs and displays them to table
 - **`/run-attack`** sends configuration back to the application
 - **`/capture.pcap`** provides PCAP formatted file for download
-- **`/capture.hccapx`** provides HCCAPX formatted file for download
 
 ### JavaScript client
 Endpoints are called using AJAX calls from JavaScript provided on `index.html` page. It also parser reponses from webserver from binary to human readble form.
