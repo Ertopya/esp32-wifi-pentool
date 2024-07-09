@@ -136,10 +136,6 @@ typedef struct __attribute__((__packed__)) {
  */
 #define KEY_DATA_OUI_IEEE80211 0x00fac00
 
-/**
- * @see Ref: 802.11-2016 [12.7.2, Table 12-6]
- */
-#define KEY_DATA_DATA_TYPE_PMKID_KDE 4
 
 /**
  * @see Ref: 802.11-2016 [12.7.2]
@@ -151,13 +147,5 @@ typedef struct __attribute__((__packed__)) {
     uint32_t data_type:8;
     uint8_t data[];
 } key_data_field_t;
-
-/**
- * @brief linked list of PMKIDs
- */
-typedef struct pmkid_item {
-    uint8_t pmkid[16];
-    struct pmkid_item *next;
-} pmkid_item_t;
 
 #endif

@@ -44,18 +44,11 @@ eapol_packet_t *parse_eapol_packet(data_frame_t *frame);
 eapol_key_packet_t *parse_eapol_key_packet(eapol_packet_t *eapol_packet);
 
 /**
- * @brief Parses PMKIDs from EAPoL-Key packet
+ * @brief Verify if the packet is a PROBE frame
  * 
- * @param eapol_key 
- * @return pmkid_item_t* linked list of PMKIDs if parsing successful
- * @return \c NULL if no key data present
- * @return \c NULL if key data are encrypted
- * @return \c NULL parsing fails
+ * @param frame 
+ * @return bool
  */
-pmkid_item_t *parse_pmkid(eapol_key_packet_t *eapol_key);
-
-
-
 bool is_probe_frame(data_frame_t * frame);
 
 #endif

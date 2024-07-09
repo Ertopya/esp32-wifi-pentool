@@ -20,9 +20,7 @@
  * 
  */
 typedef enum {
-    ATTACK_TYPE_PASSIVE,
     ATTACK_TYPE_HANDSHAKE,
-    ATTACK_TYPE_PMKID,
     ATTACK_TYPE_DOS
 } attack_type_t;
 

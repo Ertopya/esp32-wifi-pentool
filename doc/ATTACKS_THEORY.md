@@ -40,7 +40,3 @@ This can be used for brute-force attack by guessing the network *passphrase*, ca
 One downside of handshake capture is, that you have to actually be around when some handshake with target AP is happening. This makes handshake capture unpredictable. To trigger handshake on demand, this kind of attack is usually preceded by deauthentication attack that disconnects authenticated STAs from AP,. In combination with common wireless device vendors practice that devices automatically try to reconnect themselves if they are disconnected from network without user conscience. 802.11 standard defines a process when AP or STA can send deauthentication frame to its counterpart to inform them that it doesn't will to continue on previously authenticated session. When this happens, STA that wants to continue on communication, it has to authenticate itself again.
 
 ![Deauthenticaion frame format](../doc/drawio/deauth-frame-format.drawio.svg)
-
-## PMKID capture
-
-TBD

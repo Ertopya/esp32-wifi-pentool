@@ -15,7 +15,6 @@ ESP_EVENT_DECLARE_BASE(FRAME_ANALYZER_EVENTS);
 
 enum {
     DATA_FRAME_EVENT_EAPOLKEY_FRAME,
-    DATA_FRAME_EVENT_PMKID,
     DATA_FRAME_EVENT_PROBE_FRAME
 };
 
@@ -26,7 +25,6 @@ enum {
  */
 typedef enum {
     SEARCH_HANDSHAKE,
-    SEARCH_PMKID
 } search_type_t;
 
 /**

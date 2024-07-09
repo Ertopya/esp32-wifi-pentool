@@ -18,7 +18,6 @@
 #include "esp_event.h"
 #include "esp_timer.h"
 
-#include "attack_pmkid.h"
 #include "attack_handshake.h"
 #include "attack_dos.h"
 #include "webserver.h"
@@ -77,16 +76,9 @@ static void attack_timeout(void* arg){
     attack_update_status(TIMEOUT);
 
     switch(attack_status.type) {
-        case ATTACK_TYPE_PMKID:
-            ESP_LOGI(TAG, "Aborting PMKID attack...");
-            attack_pmkid_stop();
-            break;
         case ATTACK_TYPE_HANDSHAKE:
             ESP_LOGI(TAG, "Abort HANDSHAKE attack...");
             attack_handshake_stop();
-            break;
-        case ATTACK_TYPE_PASSIVE:
-            ESP_LOGI(TAG, "Abort PASSIVE attack...");
             break;
         case ATTACK_TYPE_DOS:
             ESP_LOGI(TAG, "Abort DOS attack...");
@@ -129,16 +121,9 @@ static void attack_request_handler(void *args, esp_event_base_t event_base, int3
     ESP_ERROR_CHECK(esp_timer_start_once(attack_timeout_handle, attack_config.timeout * 1000000));
     // start attack based on it's type
     switch(attack_config.type) {
-        case ATTACK_TYPE_PMKID:
-            ESP_LOGI(TAG, "attack_pmkid_start");
-            attack_pmkid_start(&attack_config);
-            break;
         case ATTACK_TYPE_HANDSHAKE:
             ESP_LOGI(TAG, "attack_handshake_start");
             attack_handshake_start(&attack_config);
-            break;
-        case ATTACK_TYPE_PASSIVE:
-            ESP_LOGW(TAG, "ATTACK_TYPE_PASSIVE not implemented yet!");
             break;
         case ATTACK_TYPE_DOS:
             ESP_LOGI(TAG, "attack_dos_start");
